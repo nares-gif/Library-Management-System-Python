@@ -1,5 +1,7 @@
 import datetime
 import json
+import functools
+import logging
 
 
 class BookRepository:
@@ -51,13 +53,33 @@ class BookRepository:
             return str(max(map(int, self.books_dict.keys()))+1)
         return "101"
     
+ 
+ 
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger("ActionLogger")
+
+def log_action(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        logger.info(f"Executing '{func.__name__}' | Args: {args} | Kwargs: {kwargs}")
+        try:
+            result = func(*args, **kwargs)
+            logger.info(f"Finished '{func.__name__}' | Returned: {result}")
+            return result
+        except Exception as e:
+            logger.error(f"Failed '{func.__name__}' | Exception: {str(e)}")
+            raise e
+    return wrapper
+        
+ 
+    
 class LibraryService():
     def __init__(self, repository: BookRepository):
         self.repository = repository
     
     def get_all_books(self) -> dict:
         return self.repository.get_all()
-        
+         
     def issue_books(self, books_id: str, borrower_name: str) -> tuple[bool, str]:
         book = self.repository.get_by_id(books_id)
         
@@ -76,7 +98,7 @@ class LibraryService():
         
         return True, "The book was issued succesfully"
         
-    
+    @log_action
     def add_book(self, title: str) -> tuple[bool, str]:        
         if title.strip() == "":
             return False, "title cannot be empty. input the title!"
@@ -105,7 +127,8 @@ class LibraryService():
         "issue_date": ""    
         })
         return True, "Books succesfully returned"
-        
+     
+    @log_action   
     def search_books(self, search: str) -> dict:
         search = search.lower()
         return {
@@ -114,7 +137,7 @@ class LibraryService():
                 if search in data.get("books_title", "").lower()
         }
         
-    def delete_book(self, books_id: str) -> None:        
+    def delete_book(self, books_id: str) -> tuple[bool, str]:        
         book = self.repository.get_by_id(books_id)
         if book is None:
             return False, "Book ID not found"

@@ -10,5 +10,11 @@
         "lender_name": "",
         "status": "available",
         "issue_date": ""
+    },
+    "103": {
+        "books_title": "Metamorfosis",
+        "lender_name": "",
+        "status": "available",
+        "issue_date": ""
     }
 }
