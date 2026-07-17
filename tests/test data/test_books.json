@@ -1,0 +1,20 @@
+{
+    "101": {
+        "books_title": "Sapiens",
+        "lender_name": "",
+        "status": "available",
+        "issue_date": ""
+    },
+    "102": {
+        "books_title": "Dunia Sophie",
+        "lender_name": "",
+        "status": "available",
+        "issue_date": ""
+    },
+    "103": {
+        "books_title": "Metamorfosis",
+        "lender_name": "",
+        "status": "available",
+        "issue_date": ""
+    }
+}
